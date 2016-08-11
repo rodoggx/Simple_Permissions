@@ -1,7 +1,12 @@
 package com.example.simplepermissions;
 
+import android.content.pm.PackageManager;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
 import android.util.Log;
 import android.view.View;
 
@@ -13,10 +18,13 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Scanner;
 
+import android.Manifest;
+
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "doMagicTAG_";
+    private static final int CODE_CONSTANT = 10;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,8 +33,29 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void doMagic(View view) {
-        writeTimeExternal();
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            Log.d(TAG, "doMagic: " + "doMagic Permission Denied");
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    CODE_CONSTANT);
+        } else {
+            Log.d(TAG, "doMagic: " + "doMagic Permission Granted");
+            writeTimeExternal();
+        }
+    }
 
+    //prompt usesr to allow permission
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case CODE_CONSTANT:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Log.d(TAG, "onRequestPermissionsResult: " + "ReadMagic Permission Granted");
+                    writeTimeExternal();
+                } else {
+                    Log.d(TAG, "onRequestPermissionsResult: " + "ReadMagic Permission Denied");
+                }
+        }
     }
 
     public void writeTimeExternal() {
