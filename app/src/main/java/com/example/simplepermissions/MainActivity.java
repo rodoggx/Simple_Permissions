@@ -25,6 +25,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void doMagic(View view) {
+        writeTimeExternal();
+
+    }
+
+    public void writeTimeExternal() {
         File file = android.os.Environment.getExternalStorageDirectory();
 
         File aux = new File(file, "hello.txt");
@@ -45,10 +50,13 @@ public class MainActivity extends AppCompatActivity {
 
         Log.d(TAG, "doMagic: " + file);
         Log.d(TAG, "doMagic: " + aux);
-
     }
 
     public void readMagic(View view) {
+        readFileExternal();
+    }
+
+    public void readFileExternal() {
         File file = android.os.Environment.getExternalStorageDirectory();
         File aux = new File(file, "hello.txt");
 
